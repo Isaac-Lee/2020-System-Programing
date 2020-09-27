@@ -219,8 +219,6 @@ int getByte(int x, int n) {
  *  Rating: 2
  */
 int byteSwap(int x, int n, int m) {
-  int Nbyte, Mbyte, Nnum, Mnum;
-
   /* 
    * 바이트를 바꾸기 위해서 각 위치에 값을 복사하기 위한 Nnum, Mnum를 준비하고
    * 각 위치의 값을 복사해서 바꿔주는 위치로 bitshift를 한다.
@@ -228,11 +226,14 @@ int byteSwap(int x, int n, int m) {
    * 그리고 다시 바꾼 값을 or연산으로 넣어준다.
    */
 
-  Nbyte = 0x000000ff << (n << 3);
-  Mbyte = 0x000000ff << (m << 3);
+  int Nbyte = 0x000000ff << (n << 3);
+  int Mbyte = 0x000000ff << (m << 3);
 
-  Nnum = ((x >> (n << 3)) & 0x000000ff) << (m << 3);
-  Mnum = ((x >> (m << 3)) & 0x000000ff) << (n << 3);
+  int Nindex = n << 3;
+  int Mindex = m << 3;
+
+  int Nnum = ((x >> Nindex) & 0x000000ff) << Mindex;
+  int Mnum = ((x >> Mindex) & 0x000000ff) << Nindex;
 
   x = x&(~(Nbyte|Mbyte));
   x = x|(Nnum|Mnum);
@@ -248,8 +249,6 @@ int byteSwap(int x, int n, int m) {
  *   Rating: 3
  */
 int addOK(int x, int y) {
-  int sum, Xsign, Ysign, Ssign;
-
   /* 
    * x, y 그리고 합의 부호를 구한다.
    * x, y의 부호가 다르면, overflow가 나지 않는다.
@@ -258,11 +257,11 @@ int addOK(int x, int y) {
    * 이는 괄호 안에서 연산한 값으 0과 -1이 나오기 때문이다.
    */
 
-  sum = x + y;
+  int sum = x + y;
 
-  Xsign = x >> 31;
-  Ysign = y >> 31;
-  Ssign = sum >> 31;
+  int Xsign = x >> 31;
+  int Ysign = y >> 31;
+  int Ssign = sum >> 31;
 
   return !(~(Xsign ^ Ysign) & (Ysign ^ Ssign));
 }
@@ -283,7 +282,7 @@ int isGreater(int x, int y) {
   int Ysign = y >> 31;
   int XYsign = !((x+(~y+1)) >> 31);
 
-  return (!Xsign & Ysign) | (XYsign) & !(Xsign ^ Ysign) & !!(x^y) | (Xsign ^ Ysign) & !(Xsign & !Ysign);
+  return (!Xsign & Ysign) | ((XYsign) & !(Xsign ^ Ysign) & !!(x^y));
 }
 /*
  * satMul3 - multiplies by 3, saturating to Tmin or Tmax if overflow
@@ -310,9 +309,9 @@ int satMul3(int x) {
   int mul3 = mul2 + x;
   int mul3Sign = mul3 >> 31;
 
-  int overflow = (((Xsign ^ mul2Sign) | (mul2Sign ^ mul3Sign)) << 31) >> 31;
+  int overflow = ((Xsign ^ mul2Sign) | (mul2Sign ^ mul3Sign));
 
-  int minMax = (~Xsign ^ (1 << 31)); // x가 양수면 정수 최대값, 음수면 -1
+  int minMax = (~Xsign ^ (1 << 31)); // x가 양수면 정수 최대값, 음수면 정수 최소값
 
   return (overflow & minMax) | (~overflow & mul3);
 }
