@@ -1,7 +1,13 @@
-int fib(int n) {
-  if (n == 0) return 0;
-  if (n == 1) return 1;
-  return fib(n-1) + fib(n-2);
+#define WSIZE 8*sizeof(int)
+
+long pcount_for(unsigned long x) {
+  int i;
+  long result = 0;
+  for (i = 0; i < WSIZE; i++) {
+    unsigned bit = (x >> i) & 0x1;
+    result += bit;
+  }
+  return result;
 }
 
 int main(int argc, char const *argv[])
