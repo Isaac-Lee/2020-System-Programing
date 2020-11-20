@@ -166,20 +166,47 @@ int main(int argc, char **argv)
  * the foreground, wait for it to terminate and then return.  Note:
  * each child process must have a unique process group ID so that our
  * background children don't receive SIGINT (SIGTSTP) from the kernel
- * when we type ctrl-c (ctrl-z) at the keyboard.  
+ * when we type ctrl-c (ctrl-z) at the keyboard.
  */
-void eval(char *cmdline) 
+void eval(char *cmdline)
 {
   char *argv[MAXARGS];
   pid_t pid;
+  struct job_t *job;
+  sigset_t mask;
+
+  int bg = parseline(cmdline, argv);
+
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGCHLD);
+  sigaddset(&mask, SIGINT);
+  sigaddset(&mask, SIGTSTP);
+
+  sigprocmask(SIG_BLOCK, &mask, NULL);
   
   if (!builtin_cmd(argv)) {
-    if (fgpid(jobs) == 0) {
+    pid = fork();
+    sigprocmask(SIG_UNBLOCK, &mask, NULL);
+
+    setpgid(0, 0);
+    if (pid == 0) {
       if (execve(argv[0], argv, environ) < 0) {
         printf("%s : Command not found\n\n", argv);
+        exit(0);
+      }
+    } else {
+      if(!bg){
+        addjob(jobs, pid, FG, cmdline);
+        sigprocmask(SIG_UNBLOCK, &mask, NULL);
+        waitfg(pid, 1);
+        deletejob(jobs, pid);
+      } else {
+        addjob(jobs, pid, BG, cmdline);
+        sigprocmask(SIG_UNBLOCK, &mask, NULL);
+        job = getjobpid(jobs, pid);
+        printf("(%d) (%d) %s", job->jid, job->pid, cmdline);
       }
     }
-    usleep(100000);
   }
 	return 0;
 }
@@ -188,14 +215,30 @@ int builtin_cmd(char **argv)
 {
   char *cmd = argv[0];
 
-  if (!strcmp(cmd, "quit")) {
+  if (!strcmp(cmd, "quit"))
+  {
     exit(0);
+  } else if (!strcmp(cmd, "jobs")) {
+    listjobs(jobs, STDOUT_FILENO);
+    return 1;
   }
 	return 0;
 }
 
 void waitfg(pid_t pid, int output_fd)
 {
+  struct job_t* job;
+  job = getjobpid(jobs, pid);
+  if (pid == 0)
+  {
+    return;
+  }
+  if (job != NULL)
+  {
+    while (pid == fgpid(jobs)) {
+      sleep(10000);
+    }
+  }
 	return;
 }
 
@@ -212,16 +255,35 @@ void waitfg(pid_t pid, int output_fd)
  */
 void sigchld_handler(int sig) 
 {
+  int status;
+  pid_t child_pid;
+  
+  while((child_pid = waitpid(-1, &status, WNOHANG|WUNTRACED)) > 0) {
+      if(WIFEXITED(status)) {
+          deletejob(jobs, child_pid);
+      }
+      else if(WIFSIGNALED(status))
+      {
+          printf("Job [%d] (%d) terminated by signal %d\n", pid2jid(child_pid), child_pid, WTERMSIG(status));
+          deletejob(jobs, child_pid);
+      }
+  }
 	return;
 }
 
 /* 
  * sigint_handler - The kernel sends a SIGINT to the shell whenver the
  *    user types ctrl-c at the keyboard.  Catch it and send it along
- *    to the foreground job.  
+ *    to the foreground job.
  */
 void sigint_handler(int sig) 
 {
+  pid_t pid;
+  pid = fgpid(jobs);
+  if(pid!=0)
+  {
+      kill(-pid, sig);
+  }
 	return;
 }
 
