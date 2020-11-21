@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2020-11-21T15:15:01.224Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15" etag="BnfzgbW5pppTqM3VyazQ" version="13.10.0" type="github">
+<mxfile host="app.diagrams.net" modified="2020-11-21T15:39:45.264Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15" etag="XbYQhvCZWTSvvFh7DZQ4" version="13.10.0" type="github" pages="2">
   <diagram id="R4cPaEtcHPXe7eK97aWt" name="Page-1">
-    <mxGraphModel dx="1010" dy="1149" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1061" dy="998" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -67,6 +67,31 @@
         </mxCell>
         <mxCell id="5YZSUBnvmhxX3WKnV-cV-14" value="자식 끝날 때까지 기다리기" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" vertex="1" parent="1">
           <mxGeometry x="322.5" y="610" width="145" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="3v97u_eHs8XFbpnmTfma" name="Page-2">
+    <mxGraphModel dx="1512" dy="1354" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="JZxj2HLR1V-IlHr3YhoW-0" />
+        <mxCell id="JZxj2HLR1V-IlHr3YhoW-1" parent="JZxj2HLR1V-IlHr3YhoW-0" />
+        <mxCell id="JZxj2HLR1V-IlHr3YhoW-5" value="stop signal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;" edge="1" parent="JZxj2HLR1V-IlHr3YhoW-1" source="JZxj2HLR1V-IlHr3YhoW-3" target="JZxj2HLR1V-IlHr3YhoW-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="JZxj2HLR1V-IlHr3YhoW-6" value="intp signal, exit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="JZxj2HLR1V-IlHr3YhoW-1" source="JZxj2HLR1V-IlHr3YhoW-3" target="JZxj2HLR1V-IlHr3YhoW-7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="230" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JZxj2HLR1V-IlHr3YhoW-3" value="&lt;span&gt;child_pid = waitpid()&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fontSize=12;" vertex="1" parent="JZxj2HLR1V-IlHr3YhoW-1">
+          <mxGeometry x="299" y="140" width="230" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="JZxj2HLR1V-IlHr3YhoW-4" value="job state를 ST로 설정" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" vertex="1" parent="JZxj2HLR1V-IlHr3YhoW-1">
+          <mxGeometry x="347" y="280" width="134" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="JZxj2HLR1V-IlHr3YhoW-7" value="delete job()" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" vertex="1" parent="JZxj2HLR1V-IlHr3YhoW-1">
+          <mxGeometry x="170" y="280" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
